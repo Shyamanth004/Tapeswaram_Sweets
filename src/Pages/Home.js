@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from "../Components/Navbar";
 import Header from "../Components/Header";
 import { Link } from 'react-router-dom';
 import Footer from '../Components/Footer';
 
-const products = [
+const slides = [
   {
     id: 1,
-    name: "Odhis' Chenna Pudo",
+    name: "Tapeshwaram Madata Kaja",
     image: "/p1.jpg",
+    description: "A flaky Andhra sweet, fried to golden perfection and soaked in fragrant sugar syrup—a delightful dance of crispy layers and sweetness.",
   },
   {
     id: 2,
-    name: "Bengali Rasgulla",
+    name: "Bellam Pootarekulu",
     image: "/p2.jpg",
+    description: "A sweet tradition from Atreyapuram, where paper-thin layers hold the sweetness of jaggery and the crunch of nuts.",
   },
   {
     id: 3,
-    name: "Punjabi Kaju Katli",
+    name: "Neeti Bobbatlu",
     image: "/p3.jpg",
+    description: "Neeti Bobbatlu, is a sweet Indian flatbread stuffed with a mixture of cooked chana dal, jaggery, cardamom powder, and ground nutmeg",
   },
-  // Add more products if needed
 ];
+
 const aboutBlocks = [
   {
     image: "/ab1.jpg",
@@ -44,8 +47,18 @@ const aboutBlocks = [
 ];
 
 const Home = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide === 0 ? slides.length - 1 : prevSlide - 1));
+  };
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide === slides.length - 1 ? 0 : prevSlide + 1));
+  };
+
   return (
-    <div>
+    <div className="overflow-hidden">
       <Navbar />
       <div>
         <Header /><br />
@@ -64,53 +77,60 @@ const Home = () => {
               Best Selling Products
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="relative group w-full h-64 rounded-lg overflow-hidden shadow-lg transform transition duration-500 ease-in-out hover:scale-110"
-                >
+            <div className="flex justify-center items-center">
+              <button
+                onClick={handlePrevSlide}
+                className="text-white text-2xl focus:outline-none"
+              >
+                &#10094;
+              </button>
+
+              <div className="flex flex-col md:flex-row items-center max-w-4xl w-full mx-6">
+                <div className="md:w-1/2 w-full p-4">
                   <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
+                    src={slides[currentSlide].image}
+                    alt={slides[currentSlide].name}
+                    className="w-full h-auto object-cover rounded-lg shadow-lg"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                    <div className="text-center text-white p-4">
-                      <h1 className="text-xl font-bold mb-4">{product.name}</h1>
-                      <Link to="./varieties" className="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600" >
-                        Explore More
-                      </Link>
-                    </div>
-                  </div>
                 </div>
-              ))}
+                <div className="md:w-1/2 w-full p-4 text-left">
+                  <h3 className="text-3xl font-bold mb-4 text-white">{slides[currentSlide].name}</h3>
+                  <p className="text-lg text-white mb-8">{slides[currentSlide].description}</p>
+                  <Link to="./varieties" className="px-6 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600" >
+                    Explore More
+                  </Link>
+                </div>
+              </div>
+              <button
+                onClick={handleNextSlide}
+                className="text-white text-2xl focus:outline-none"
+              >
+                &#10095;
+              </button>
             </div>
           </div>
         </section>
+
         <div className="min-h-screen bg-gray-100">
           <div className="py-24 bg-red-700">
             <h2 className="text-3xl sm:text-3xl lg:text-5xl font-bold text-center text-white">About Us</h2>
           </div>
-          <section className="py-16 max-w-7xl mx-auto">
-
+          <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {aboutBlocks.map((block, index) => (
               <div
                 key={index}
-                className={`flex flex-col lg:flex-row items-center justify-between mb-12 lg:mb-24 ${index % 2 === 1 ? "lg:flex-row-reverse" : ""
-                  }`}
+                className={`flex flex-col lg:flex-row items-center justify-between mb-12 lg:mb-24 ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
               >
-                <div className="w-[95%] lg:w-1/2 h-64 lg:h-80 overflow-hidden rounded-lg shadow-lg transform transition-transform duration-700 ease-in-out hover:scale-105 animate-slide-In">
+                <div className="w-full lg:w-1/2 h-64 lg:h-80 overflow-hidden rounded-lg shadow-lg transform transition-transform duration-700 ease-in-out hover:scale-105">
                   <img
                     src={block.image}
                     alt={block.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
-
                 <div className="w-full lg:w-1/2 lg:pl-8 mt-8 lg:mt-0 text-center lg:text-left">
-                  <h3 className="text-2xl font-bold mb-4 animate-fade-in">{block.title}</h3>
-                  <p className="playpen-sans-text text-lg px-2 lg:px-0 lg:pr-3 text-gray-700 animate-fade-in">{block.description}</p>
+                  <h3 className="text-2xl font-bold mb-4">{block.title}</h3>
+                  <p className="text-lg text-gray-700">{block.description}</p>
                 </div>
               </div>
             ))}
